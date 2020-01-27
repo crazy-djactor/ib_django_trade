@@ -137,3 +137,7 @@ LOCALE_PATHS = [
 SIGN_UP_FIELDS = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
 if DISABLE_USERNAME:
     SIGN_UP_FIELDS = ['first_name', 'last_name', 'email', 'password1', 'password2']
+
+TRADER_HOST = '127.0.0.1'
+TRADER_PORT = 7496
+TRADER_CLIENTID = 999
