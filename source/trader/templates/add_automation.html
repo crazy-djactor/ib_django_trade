@@ -30,22 +30,8 @@
         </thead>
         <tbody>
             <tr>
-              <td style="width: 50%">
-                <input type="text" name="" value="">
-              </td>
-
-              <td style="width: 50%">
-                <select class="form-control" name="risk_level">
-                  <option value="low" selected>Low</option>
-                  <option value="medium">Medium</option>
-                </select>
-              </td>
-
-            </tr>
-
-            <tr>
-                 <td>Stock</td>
-                 <td>
+                 <td style="width: 50%">Stock</td>
+                 <td style="width: 50%">
                    <select class="form-control" id="stock" name="symbol_1" onchange="changeStock(this)">
                         {% for sheet in sheets %}
                             <option value="{{ sheet.symbol_1 }}" >
