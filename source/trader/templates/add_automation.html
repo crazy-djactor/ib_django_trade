@@ -52,7 +52,7 @@
              <td>
                <select class="form-control" id="stock" name="symbol_1" onchange="changeStock(this)">
                     {% for sheet in sheets %}
-                        <option value="{{ i }}" >
+                        <option value="{{ sheet.symbol_1 }}" >
                             {{ sheet.symbol_1 }}
                         </option>
                     {% endfor %}
