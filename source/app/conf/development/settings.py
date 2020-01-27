@@ -11,7 +11,9 @@ CONTENT_DIR = os.path.join(BASE_DIR, 'content')
 SECRET_KEY = 'NhfTvayqggTBPswCXXhWaN69HuglgZIkM'
 
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '3.12.135.201'
+]
 
 SITE_ID = 1
 
