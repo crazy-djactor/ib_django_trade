@@ -1,5 +1,23 @@
 {% extends 'layouts/default/page.html' %}
 {% block content %}
+<script>
+    var sheets = {{sheets|safe }};
+    console.log(sheets)
+
+    function changeStock(ele) {
+        let index = ele.selectedIndex;
+        $("#expiration_call").val(sheets[index]['expiration_call'])
+        $("#strike_call").val(sheets[index]['strike_call'])
+        $("#expiration_put").val(sheets[index]['expiration_put'])
+        $("#strike_put").val(sheets[index]['strike_put'])
+        $("#ten_years_yield").val(sheets[index]['ten_years_yield'])
+        $("#time_exp").val(sheets[index]['time_exp'])
+        $("#opt_diff").val(sheets[index]['opt_diff'])
+        $("#num_of_contracts").val(sheets[index]['num_of_contracts'])
+        $("#long_threshold").val(sheets[index]['long_threshold'])
+        $("#short_threshold").val(sheets[index]['short_threshold'])
+    }
+</script>
 
 <div class="container">
     <form  action="{% url 'trader:add_automation' %}" method="post">
@@ -17,7 +35,7 @@
 
         <tr>
           <td>
-            <input type="text" name="" value="{{ sheet.portfolio_size }}">
+            <input type="text" name="" value="">
           </td>
 
           <td>
@@ -32,15 +50,12 @@
         <tr>
              <td>Stock</td>
              <td>
-               <select class="form-control" name="symbol_1">
-                 <option value="SNAP" selected>SNAP</option>
-                 <option value="GE">GE</option>
-                 <option value="BAC" selected>BAC</option>
-                 <option value="SPY">SPY</option>
-                 <option value="JPM" selected>JPM</option>
-                 <option value="SQ">SQ</option>
-                 <option value="FB" selected>FB</option>
-                 <option value="AAPL">AAPL</option>
+               <select class="form-control" id="stock" name="symbol_1" onchange="changeStock(this)">
+                    {% for sheet in sheets %}
+                        <option value="{{ i }}" >
+                            {{ sheet.symbol_1 }}
+                        </option>
+                    {% endfor %}
                </select>
              </td>
         </tr>
@@ -49,80 +64,80 @@
                Expiration Call
              </td>
              <td>
-               <input type="text" name="expiration_call" value="{{ sheet.expiration_call }}">
+               <input type="text" id="expiration_call" name="expiration_call" value="{{ sheet.expiration_call }}">
              </td>
         </tr>
         <tr>
             <td>Strike Call</td>
             <td>
-              <input type="text" name="strike_call" value="{{ sheet.strike_call }}">
+              <input type="text" id="strike_call" name="strike_call" value="{{ sheet.strike_call }}">
             </td>
         </tr>
         <tr>
             <td>Expiration Put</td>
             <td>
-              <input type="text" name="expiration_put" value="{{ sheet.expiration_put }}">
+              <input type="text" id="expiration_put" name="expiration_put" value="{{ sheet.expiration_put }}">
             </td>
         </tr>
 
         <tr>
             <td>Strike Put</td>
             <td>
-              <input type="text" name="strike_put" value="{{ sheet.strike_put }}">
+              <input type="text" id="strike_put" name="strike_put" value="{{ sheet.strike_put }}">
             </td>
         </tr>
 
         <tr>
             <td>10 year yield</td>
             <td>
-              <input type="text" name="ten_years_yield" value="{{ sheet.ten_years_yield }}">
+              <input type="text" id="ten_years_yield" name="ten_years_yield" value="{{ sheet.ten_years_yield }}">
             </td>
         </tr>
 
         <tr>
             <td>Time Exp.</td>
             <td>
-              <input type="text" name="time_exp" value="{{ sheet.time_exp }}">
+              <input type="text" id="time_exp" name="time_exp" value="{{ sheet.time_exp }}">
             </td>
         </tr>
 
         <tr>
              <td>Opt. % Diff</td>
              <td>
-               <input type="text" name="opt_diff" value="{{ sheet.opt_diff }}">
+               <input type="text" id="opt_diff" name="opt_diff" value="{{ sheet.opt_diff }}">
              </td>
         </tr>
 
         <tr>
              <td># of Contracts</td>
              <td>
-               <input type="text" name="num_of_contracts" value="{{ sheet.num_of_contracts }}">
+               <input type="text" id="num_of_contracts" name="num_of_contracts" value="{{ sheet.num_of_contracts }}">
              </td>
         </tr>
 
         <tr>
              <td>Long Threshold</td>
              <td>
-               <input type="text" name="long_threshold" value="{{ sheet.long_threshold }}">
+               <input type="text" id="long_threshold" name="long_threshold" value="{{ sheet.long_threshold }}">
              </td>
         </tr>
 
         <tr>
              <td>Short Threshold</td>
              <td>
-               <input type="text" name="short_threshold" value="{{ sheet.short_threshold }}">
+               <input type="text" id="short_threshold" name="short_threshold" value="{{ sheet.short_threshold }}">
              </td>
         </tr>
 
         <tr>
           <td>
               {% csrf_token %}
-              <input class="btn  n btn-primary" type="submit" name="addsheet" value="Add Automation">
+              <input class="btn  n btn-primary" type="submit" name="run_algo" value="Run Algo">
           </td>
 
           <td>
             {% csrf_token %}
-              <input class="btn btn-success" type="submit" name="update_sheet" value="Update Values">
+              <input class="btn btn-success" type="submit" name="update_sheet" value="Update From GoogleSheet">
           </td>
 
         </tr>

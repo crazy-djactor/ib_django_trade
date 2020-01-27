@@ -8,12 +8,14 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import FormView
 from .forms import ShowAutomationForm, AddAutomationForm
-from .util import Util, tradingThread
+from .util import Util, tradingThread, openSample
 from tornado.platform.asyncio import AnyThreadEventLoopPolicy
 from django.utils.translation import gettext_lazy as _
+
 # Create your views here.
 
 util = Util()
+google_data = openSample()
 
 class ShowAutomation(FormView):
     template_name = "show_automation.html"
@@ -82,6 +84,7 @@ class AddAutomationView(FormView):
         super().__init__(**kwargs)
         asyncio.set_event_loop_policy(AnyThreadEventLoopPolicy())
         self.util = Util()
+        # self.google_data = openSample()
 
     def dispatch(self, request, *args, **kwargs):
         # Sets a test cookie to make sure the user has cookies enabled
@@ -100,13 +103,14 @@ class AddAutomationView(FormView):
         if request.user.is_authenticated:
             form = self.form_class(initial=self.initial)
             self.sheet = globals()['util'].getSheet()
-            return render(request, self.template_name, {'form': form, 'sheet': self.sheet})
+            # self.google_data = openSample()
+            return render(request, self.template_name, {'form': form, 'sheet': self.sheet, 'sheets': globals()['google_data']})
         else:
             return HttpResponseRedirect('/accounts/log-in/')
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
-        if 'update_sheet' in request.POST:
+        if 'run_algo' in request.POST:
             if form.is_valid():
                 # thread1 = tradingThread(self.util, inputArg=form.data)
                 # thread1.start()
@@ -124,6 +128,7 @@ class AddAutomationView(FormView):
                     request.session['strText'] = strText
                     request.session['retVal'] = json.dumps(retval, sort_keys=True)
                     return HttpResponseRedirect('/trader/show_automation/')
-            return render(request, self.template_name, {'sheet': form.data})
-        elif 'addsheet' in request.POST:
-            return render(request, self.template_name, {'form': form, 'sheet': form.data})
+            return render(request, self.template_name, {'form': form, 'sheets': globals()['google_data'], 'sheet': self.sheet})
+        elif 'update_sheet' in request.POST:
+            globals()['google_data'] = openSample()
+            return render(request, self.template_name, {'form': form, 'sheets': globals()['google_data'], 'sheet': self.sheet})

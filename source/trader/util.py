@@ -17,6 +17,16 @@ import scipy.stats as si
 from math import *
 from django.conf import settings
 
+
+
+import pickle
+import os.path
+from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
+
+
+
 clientId = 0
 
 class tradingThread(threading.Thread):
@@ -507,19 +517,89 @@ class Util:
                 pass
         return [strText, retval]
 
+class getGoogleData:
+    def __init__(self):
+
+        pass
+
+def openSample():
+    """Shows basic usage of the Sheets API.
+    Prints values from a sample spreadsheet.
+    """
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+
+    # The ID and range of a sample spreadsheet.
+    SAMPLE_SPREADSHEET_ID = '1-opKcXp7p34ojwWFpM3PP48Fd34s6PCRwLDzmfv7Rts'
+    SAMPLE_RANGE_NAME = 'Data!A1:AI'
+
+    creds = None
+    # The file token.pickle stores the user's access and refresh tokens, and is
+    # created automatically when the authorization flow completes for the first
+    # time.
+    print(os.path.curdir)
+    print(settings.CREDENTIAL_PATHS + 'token.pickle')
+    if os.path.exists(settings.CREDENTIAL_PATHS + 'token.pickle'):
+        with open(settings.CREDENTIAL_PATHS + 'token.pickle', 'rb') as token:
+            creds = pickle.load(token)
+    # If there are no (valid) credentials available, let the user log in.
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                settings.CREDENTIAL_PATHS + 'credentials.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+        # Save the credentials for the next run
+        with open(settings.CREDENTIAL_PATHS + 'token.pickle', 'wb') as token:
+            pickle.dump(creds, token)
+
+    service = build('sheets', 'v4', credentials=creds)
+
+    # Call the Sheets API
+    sheet = service.spreadsheets()
+    result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
+                                range=SAMPLE_RANGE_NAME).execute()
+    values = result.get('values', [])
+
+    sheets = []
+    if not values:
+        print('No data found.')
+    else:
+        print('Name, Major:')
+
+        for row in values[1:]:
+            # Print columns A and E, which correspond to indices 0 and 4.
+            print('%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s' % (row[0], row[1], row[8], row[9], row[21], row[23], row[25], row[27], row[32], row[33], row[34]))
+            sheet = {
+                    "symbol_1": row[0],
+                    "expiration_call": row[21],
+                     "strike_call": row[8],
+                     "expiration_put": row[21],
+                     "strike_put": row[9],
+                     "ten_years_yield": row[23],
+                     "time_exp": row[25],
+                     "opt_diff": row[27],
+                     "num_of_contracts": row[32],
+                     "long_threshold": row[33],
+                     "short_threshold": row[34]
+            }
+            sheets.append(sheet)
+    return sheets
 
 if __name__ == '__main__':
-    util = Util()
-    sheet = {
-            "symbol_1" : "AAPL",
-            "expiration_call": '20200207',
-             "strike_call": '325',
-             "expiration_put": '20200207',
-             "strike_put": '312.50',
-             "ten_years_yield": '1.84',
-             "time_exp": '0.049',
-             "opt_diff": '1.020',
-             "num_of_contracts": '0',
-             "long_threshold": '0.58',
-             "short_threshold": '0.50'}
-    util.getTrade(sheet)
+    openSample()
+
+    # util = Util()
+    # sheet = {
+    #         "symbol_1" : "AAPL",
+    #         "expiration_call": '20200207',
+    #          "strike_call": '325',
+    #          "expiration_put": '20200207',
+    #          "strike_put": '312.50',
+    #          "ten_years_yield": '1.84',
+    #          "time_exp": '0.049',
+    #          "opt_diff": '1.020',
+    #          "num_of_contracts": '0',
+    #          "long_threshold": '0.58',
+    #          "short_threshold": '0.50'}
+    # util.getTrade(sheet)

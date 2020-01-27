@@ -137,6 +137,9 @@ LOCALE_PATHS = [
     os.path.join(CONTENT_DIR, 'locale')
 ]
 
+CREDENTIAL_PATHS = (
+    os.path.join(CONTENT_DIR, 'credential/')
+)
 # TRADER_API SETTING
 TRADER_HOST = '127.0.0.1'
 TRADER_PORT = 7496
