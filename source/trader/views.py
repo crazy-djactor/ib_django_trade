@@ -14,6 +14,7 @@ from django.utils.translation import gettext_lazy as _
 
 # Create your views here.
 
+asyncio.set_event_loop_policy(AnyThreadEventLoopPolicy())
 util = Util()
 google_data = openSample()
 
@@ -82,9 +83,9 @@ class AddAutomationView(FormView):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        asyncio.set_event_loop_policy(AnyThreadEventLoopPolicy())
-        self.util = Util()
-        # self.google_data = openSample()
+
+        self.util = util
+        self.google_data = openSample()
 
     def dispatch(self, request, *args, **kwargs):
         # Sets a test cookie to make sure the user has cookies enabled
