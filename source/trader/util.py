@@ -67,29 +67,16 @@ class Util:
 
     def __init__(self):
         self.bRunning = False
-        self.ib = IB()
         self.id = random.random()
-
+        self.ib = IB()
         # self.ib.connect(settings.TRADER_HOST, settings.TRADER_PORT, clientId=settings.TRADER_CLIENTID)
         return
-
-    def getSheet(self):
-        sheet = {"expiration_call": '20200207',
-                 "strike_call": '325',
-                 "expiration_put": '20200207',
-                 "strike_put": '312.50',
-                 "ten_years_yield": '1.84',
-                 "time_exp": '0.049',
-                 "opt_diff": '1.020',
-                 "num_of_contracts": '0',
-                 "long_threshold": '0.58',
-                 "short_threshold": '0.50'}
-        return sheet
 
     def getTrade(self, inputArg):
         self.bRunning = True
         try :
             # Connect to API
+
             if self.ib.isConnected():
                 pass
             else:
@@ -218,6 +205,7 @@ class Util:
         pricedata_1 = self.get_quote_data(self.symbol_1, '125d', '1d')
         print("Initial Price Data Received...")
 
+        self.GetLatestPriceData()
     # Get latest close bar prices and run Update() function every close of bar/candle
     def Run(self):
         while True:
@@ -244,6 +232,7 @@ class Util:
 
         # Normal operation will update pricedata on first attempt
         new_pricedata_1 = self.get_quote_data(self.symbol_1, '125d', '1d')
+
         print(new_pricedata_1)
         return True
 
@@ -277,7 +266,7 @@ class Util:
 
                 print("Current Annualized Historical Volatility for Stock is:")
                 print(historical_vol)
-                strText = "{}Current Annualized Historical Volatility for Stock is:\n{}".\
+                strText = "{}Current Annualized Historical Volatility for Stock is:\n{}\n".\
                     format(strText, historical_vol)
 
                 retval["historical_vol"] = historical_vol
@@ -388,7 +377,7 @@ class Util:
 
                 funds = float(account_tag_value(self.ib, 'AvailableFunds'))
                 print(f"\n\nAvailableFunds: {funds}")
-                strText = "{}\n\nAvailableFunds: {}".format(strText,str(funds))
+                strText = "{}\n\nAvailableFunds: {}\n".format(strText,str(funds))
                 # *****************************************************************************************************
                 # next, allocate a 2% position based on available balance
                 # *****************************************************************************************************
@@ -434,19 +423,20 @@ class Util:
 # ###################################################################
 #######################################################################################################################
 # ###################################################################
-
+                strText = "{}============================\n".format(strText)
                 if predictions.values[-1:] == 1 and (current_ai_historical_accuracy > self.ai_pct_threshold_long) and (
                         bsm_call_price > theoretical_call_price):
                     print("BUY LONG SIGNAL!")
                     print("Buying Call Contract for...")
                     print(symbol)
-
+                    strText = "{}BUY LONG SIGNAL!\nBuying Call Contract for...\n{}\n".format(strText, symbol)
                     # order to buy contract:
                     contract = Option(symbol=symbol, lastTradeDateOrContractMonth=self.expiration_date_call,
                                       strike=self.strike_price_call, right='C', exchange='SMART')
                     # place market order
                     order = MarketOrder('BUY', self.num_contracts)
                     trade = self.ib.placeOrder(contract, order)
+                    strText = "{}{}\n".format(strText, repr(trade))
                     print(trade)
 
                 if predictions.values[-1:] == -1 and (current_ai_historical_accuracy < self.ai_pct_threshold_short) and (
@@ -454,15 +444,17 @@ class Util:
                     print("SELL SHORT SIGNAL!")
                     print("Selling Call Contract for...")
                     print(symbol)
-
+                    strText = "{}SELL SHORT SIGNAL!\nSelling Call Contract for...\n{}\n".format(strText, symbol)
                     # order to sell contract:
                     contract = Option(symbol=symbol, lastTradeDateOrContractMonth=self.expiration_date_put,
                                       strike=self.strike_price_put, right='P', exchange='SMART')
                     # place market order
                     order = MarketOrder('BUY', self.num_contracts)
                     trade = self.ib.placeOrder(contract, order)
+                    strText = "{}{}\n".format(strText, repr(trade))
                     print(trade)
 
+                strText = "{}=============================\n".format(strText)
                 # FINALLY, CONFIRM STATUS OF SIGNALS
                 print(
                     "***************************************************************************************************")
@@ -474,8 +466,7 @@ class Util:
                 print("Latest AI Accuracy for:")
                 print(symbol)
                 print(current_ai_historical_accuracy)
-                strText = "{}Latest AI Accuracy for::\n{}\n{}\n".format(strText,
-                        symbol, current_ai_historical_accuracy)
+                strText = "{}Latest AI Accuracy for::\n{}\n{}\n".format(strText, symbol, current_ai_historical_accuracy)
 
                 print("Current Set AI Percent Threshold for Long Side:")
                 print(self.ai_pct_threshold_long)
@@ -517,9 +508,9 @@ class Util:
                 pass
         return [strText, retval]
 
+
 class getGoogleData:
     def __init__(self):
-
         pass
 
 def openSample():

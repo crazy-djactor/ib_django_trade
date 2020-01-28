@@ -15,7 +15,6 @@ from django.utils.translation import gettext_lazy as _
 # Create your views here.
 
 asyncio.set_event_loop_policy(AnyThreadEventLoopPolicy())
-util = Util()
 google_data = openSample()
 
 class ShowAutomation(FormView):
@@ -84,7 +83,6 @@ class AddAutomationView(FormView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.util = util
         self.google_data = openSample()
 
     def dispatch(self, request, *args, **kwargs):
@@ -103,7 +101,6 @@ class AddAutomationView(FormView):
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             form = self.form_class(initial=self.initial)
-            self.sheet = globals()['util'].getSheet()
             # self.google_data = openSample()
             return render(request, self.template_name, {'form': form, 'sheet': self.sheet, 'sheets': globals()['google_data']})
         else:
@@ -118,8 +115,7 @@ class AddAutomationView(FormView):
                 strText = ""
                 retval = ""
                 try:
-                    # [strText, retval] = globals()['util'].getTrade(form.data)
-                    [strText, retval] = self.util.getTrade(form.data)
+                    [strText, retval] = Util().getTrade(form.data)
                 except:
                     strText = ''
                     pass
