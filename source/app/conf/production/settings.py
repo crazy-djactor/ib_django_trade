@@ -10,7 +10,8 @@ SECRET_KEY = '3d305kajG5Jy8KBafCMpHwDIsNi0SqVaW'
 DEBUG = False
 ALLOWED_HOSTS = [
      # '3.12.135.201'
-    '127.0.0.1', '3.12.135.201'
+    '127.0.0.1', '3.12.135.201',
+    'thejallgo.com'
 ]
 
 SITE_ID = 1
