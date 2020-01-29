@@ -194,7 +194,9 @@ class RestorePasswordView(GuestOnlyView, FormView):
     def form_valid(self, form):
         user = form.user_cache
         token = default_token_generator.make_token(user)
-        uid = urlsafe_base64_encode(force_bytes(user.pk)).decode()
+        str = force_bytes(user.pk)
+        uid = urlsafe_base64_encode(str)
+        # uid = urlsafe_base64_encode(force_bytes(user.pk)).decode()
 
         send_reset_password_email(self.request, user.email, token, uid)
 
