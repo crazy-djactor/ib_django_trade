@@ -1,6 +1,6 @@
 # Interactive Brokers Trading with Django
 
-An example of Django project with basic user functionality.
+An Django project with Algo
 
 ## Functionality
 
