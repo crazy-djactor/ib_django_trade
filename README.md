@@ -58,7 +58,3 @@ Just run this command:
 ```
 python source/manage.py runserver
 ```
-
-Anydesk means mobile number. I just wanted to see where you connected - Wfe or Mmy.
-Sorry, because some guy from Wfe notified me she didn't get yet. 
-Maybe Wfe is confused, or that guy, I believe. but just wanted to check again. Sorry bro.
